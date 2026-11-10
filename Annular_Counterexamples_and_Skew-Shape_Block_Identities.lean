@@ -1,10 +1,11 @@
 import Mathlib
 
 /-!
-# Order-Ideal Specializations Beyond Unimodality
+# Annular Counterexamples and Skew-Shape Block Identities
 
 Formal development accompanying the research manuscript
-*Order-Ideal Specializations Beyond Unimodality*.
+*Annular Counterexamples and Skew-Shape Block Identities:
+Weighted Order Ideals and a Lean-Verified Refinement*.
 
 ## Mathematical contents
 
