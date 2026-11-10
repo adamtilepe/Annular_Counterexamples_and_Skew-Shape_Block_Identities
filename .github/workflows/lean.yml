@@ -16,5 +16,5 @@ jobs:
         with:
           auto-config: false
           use-mathlib-cache: true
-      - name: Check all declarations and print axioms
-        run: lake env lean Order_Ideal_Specializations_Beyond_Unimodality.lean
+      - name: Check full formalization and axiom audit
+        run: lake env lean Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean

@@ -1,7 +1,7 @@
-# Order-Ideal Specializations Beyond Unimodality
+# Annular Counterexamples and Skew-Shape Block Identities
 
 **Lean 4 / Mathlib formalization accompanying the research manuscript**  
-*Order-Ideal Specializations Beyond Unimodality: Kahane's Skew-Shape Block Identity and an Annular Obstruction*
+*Annular Counterexamples and Skew-Shape Block Identities: Weighted Order Ideals and a Lean-Verified Refinement*
 
 This repository develops a common order-ideal framework for two apparently different questions in enumerative combinatorics:
 
@@ -14,73 +14,73 @@ The first question leads to explicit algebraic counterexamples to unimodality an
 
 ## 1. The common object: weighted order ideals
 
-Let \(P\) be a finite poset, \(J(P)\) its set of lower ideals, and \(w:P\to\mathbb Z\) an integer weighting. Write \(w(I)=\sum_{p\in I}w(p)\). The weighted rank enumerator is
+Let $P$ be a finite poset, $J(P)$ its set of lower ideals, and $w:P\to\mathbb Z$ an integer weighting. Write $w(I)=\sum_{p\in I}w(p)$. The weighted rank enumerator is
 
-\[
+$$
 R_{P,w}(q)=\sum_{I\in J(P)}q^{w(I)}.
-\]
+$$
 
-Its order-polynomial counterpart counts isotone maps \(P\to[m]\), denoted \(\Omega(P;m)\). Both arise as specializations of
+Its order-polynomial counterpart counts isotone maps $P\to[m]$, denoted $\Omega(P;m)$. Both arise as specializations of
 
-\[
+$$
 H_{P,w}(t;q)=\sum_{I\in J(P)}q^{w(I)}\,\Omega(P\setminus I;t-1),
-\]
+$$
 
 with
 
-\[
+$$
 H_{P,w}(t;1)=\Omega(P;t),\qquad H_{P,w}(2;q)=R_{P,w}(q).
-\]
+$$
 
-The Lean development implements these finite enumerations and their evaluations (`FinitePoset.H`, `FinitePoset.omega`, `FinitePoset.weightedRank`). Signed exponents are handled via integer powers of rational values; the development does **not** define a general two-variable Laurent polynomial object for \(H\).
+The Lean development implements these finite enumerations and their evaluations (`FinitePoset.H`, `FinitePoset.omega`, `FinitePoset.weightedRank`). Signed exponents are handled via integer powers of rational values; the development does **not** define a general two-variable Laurent polynomial object for $H$.
 
-It also proves a **no-gap support criterion** for ideal weights with \(|w(p)|\le1\): every integer between the minimum and maximum ideal weights occurs. This does not imply unimodality.
+It also proves a **no-gap support criterion** for ideal weights with $|w(p)|\le1$: every integer between the minimum and maximum ideal weights occurs. This does not imply unimodality.
 
 ## 2. Algebraic obstructions to unimodality and log-concavity
 
 The surface-motivated part studies specialized cluster exchange relations with two mutable variables and one frozen row, as in the manuscript's annular examples.
 
-**First mutation — equation (3.3).** For every integer \(r\ge2\), the specified algebraic exchange specializes to
+**First mutation — equation (3.3).** For every integer $r\ge2$, the specified algebraic exchange specializes to
 
-\[
+$$
 c_r(q)=1+q^r.
-\]
+$$
 
-Its complete coefficient sequence contains internal zeros and is **not unimodal**. At \(r=2\), its coefficients \((1,0,1)\) also fail log-concavity:
+Its complete coefficient sequence contains internal zeros and is **not unimodal**. At $r=2$, its coefficients $(1,0,1)$ also fail log-concavity:
 
-\[
+$$
 a_1^2=0<a_0a_2=1.
-\]
+$$
 
 The file proves the polynomial identity, all coefficients, non-unimodality, and the strict log-concavity violation (`AnnularFirstMutation.firstPolynomial_not_unimodal`, `AnnularFirstMutation.firstPolynomial_two_not_logConcave`).
 
-**Four-mutation example — equation (3.4).** A second algebraic calculation, with frozen row \((1,-2)\) and mutation sequence \((1,2,1,2)\), produces
+**Four-mutation example — equation (3.4).** A second algebraic calculation, with frozen row $(1,-2)$ and mutation sequence $(1,2,1,2)$, produces
 
-\[
+$$
 1+2q+7q^2+10q^3+9q^4+4q^5+q^6.
-\]
+$$
 
-Every displayed coefficient is positive, yet \(2^2<1\cdot7\): **full support does not force log-concavity**. The successive exchange identities, coefficient positivity, and inequality are formalized in `AnnularFourthMutation`.
+Every displayed coefficient is positive, yet $2^2<1\cdot7$: **full support does not force log-concavity**. The successive exchange identities, coefficient positivity, and inequality are formalized in `AnnularFourthMutation`.
 
 These computations motivate the manuscript's discussion of **Theorem 14 and Conjecture 1 of Kang–Lee–Lim**. The algebraic counterexamples are established; identifying them as counterexamples to the *geometric single-lamination claims* additionally requires verification of the surface and shear-coordinate conventions. The source does not silently assume that verification.
 
 ## 3. Canonical blocks and the skew-shape identity
 
-For a finite skew Young diagram \(D\) with \(n\) cells, the development constructs canonical connected blocks of a bijective cell labeling \(\sigma\), and writes \(\widetilde{\mathrm{bl}}_D(\sigma)\) for their number. In this formalization, the root is **excluded from its own strict boundary-label conditions**, as explained in the manuscript's Definition 4.1.
+For a finite skew Young diagram $D$ with $n$ cells, the development constructs canonical connected blocks of a bijective cell labeling $\sigma$, and writes $\widetilde{\mathrm{bl}}_D(\sigma)$ for their number. In this formalization, the root is **excluded from its own strict boundary-label conditions**, as explained in the manuscript's Definition 4.1.
 
 The principal result (Theorem 6.2 of the manuscript) is
 
-\[
+$$
 n!\,\Omega(P_D;t)=\sum_{\sigma:D\xrightarrow{\sim}[n]}t^{\widetilde{\mathrm{bl}}_D(\sigma)}.
-\]
+$$
 
 This applies to diagrams satisfying the explicit `SkewRowIntervals` hypothesis, including disconnected shapes. In Lean, the named theorem proves equality of the corresponding evaluations at every natural-number argument; the normalized block-generating expression is itself a rational polynomial.
 
 The proof proceeds through:
 
 - a canonical median construction and uniqueness of block partitions (§4);
-- commuting tableau-transfer matrices \(T_x\) and a vertical-strip inverse \(Q_x\) (§5);
-- connected-block kernels \(A_z\), their commutation, and exact polynomial primitives (§§5–6);
+- commuting tableau-transfer matrices $T_x$ and a vertical-strip inverse $Q_x$ (§5);
+- connected-block kernels $A_z$, their commutation, and exact polynomial primitives (§§5–6);
 - the ordered-root integral identity (Lemma 6.1), followed by a **finite** polynomial-matrix differential-equation argument identifying the result with powers of the zeta matrix (§6.2).
 
 The formal statement is `OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity`.
@@ -91,20 +91,20 @@ The formal statement is `OrderIdealSpecializations.OrderedRootIntegral.skew_shap
 
 Theorem 6.3 expresses the weighted interpolation in terms of block statistics on the skew complements of ideals:
 
-\[
+$$
 n!\,H_{P_D,w}(t;q)
 =\sum_{I\in J(P_D)}\frac{n!}{(n-|I|)!}\,q^{w(I)}
 \sum_{\sigma:P_D\setminus I\,\xrightarrow{\sim}\,[n-|I|]}
 (t-1)^{\widetilde{\mathrm{bl}}_{P_D\setminus I}(\sigma)}.
-\]
+$$
 
-Its finite expansion has **nonnegative integer coefficients in \(t-1\)** and, after a common exponent shift, in \(q\) as well. Corollary 6.4 recovers the two coordinate specializations and the ideal count
+Its finite expansion has **nonnegative integer coefficients in $t-1$** and, after a common exponent shift, in $q$ as well. Corollary 6.4 recovers the two coordinate specializations and the ideal count
 
-\[
+$$
 |J(P_D)|=\frac1{n!}\sum_\sigma 2^{\widetilde{\mathrm{bl}}_D(\sigma)}.
-\]
+$$
 
-The one-cell example has \(H(t;q)=(t-1)+q^2\), giving the common smallest instance of both viewpoints. The fence/ribbon connection is formulated **conditionally on an explicit order isomorphism**; the existence of a particular surface-arc model is not deduced from the algebra.
+The one-cell example has $H(t;q)=(t-1)+q^2$, giving the common smallest instance of both viewpoints. The fence/ribbon connection is formulated **conditionally on an explicit order isomorphism**; the existence of a particular surface-arc model is not deduced from the algebra.
 
 ## 5. Navigation: manuscript to Lean
 
@@ -121,7 +121,7 @@ The one-cell example has \(H(t;q)=(t-1)+q^2\), giving the common smallest instan
 | Theorem 6.3 — bivariate refinement | `OrderedRootIntegral.weighted_block_refinement_identity` |
 | Corollary 6.4 — two specializations | `OrderedRootIntegral.weighted_block_two_specializations` |
 
-The complete development is in **`Order_Ideal_Specializations_Beyond_Unimodality.lean`**. The section and theorem numbering follows the accompanying research manuscript.
+The complete development is in **`Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean`**. The section and theorem numbering follows the accompanying research manuscript.
 
 ## 6. Reproduce the verification
 
@@ -129,7 +129,7 @@ Use the pinned Lean 4 / Mathlib environment recorded by `lean-toolchain`, the La
 
 ```bash
 lake exe cache get
-lake env lean Order_Ideal_Specializations_Beyond_Unimodality.lean
+lake env lean Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean
 ```
 
 If the repository includes the verification script, it can also collect the compiler output, source checksum, toolchain information, and Mathlib revision:

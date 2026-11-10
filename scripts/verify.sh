@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
-SOURCE="Order_Ideal_Specializations_Beyond_Unimodality.lean"
+SOURCE="Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean"
 if [[ ! -f "$SOURCE" ]]; then
   echo "ERROR: $SOURCE not found in $ROOT" >&2
   exit 1
