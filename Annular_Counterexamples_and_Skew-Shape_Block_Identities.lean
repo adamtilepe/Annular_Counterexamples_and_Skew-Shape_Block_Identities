@@ -19,12 +19,22 @@ Weighted Order Ideals and a Lean-Verified Refinement*.
 * §6 — Ordered-root integral identity, skew-shape block-statistic theorem,
   bivariate refinement, and the two specializations.
 
-The block-statistic results use the explicit root-exclusion convention
-of Definition 4.1 of the accompanying manuscript. The algebraic surface
-identities are conditional on the indicated order-ideal description;
-they do not certify the realization of a specified shear vector by a
-geometric lamination. The identification with the definition in Kahane's
-published manuscript requires an independent source-version audit.
+Convention clarifications (personal correspondence, 10 November 2026):
+* Anna Felikson confirmed that one may reverse the signs of the listed
+  shear coordinates without reordering them, and that each drawn curve
+  is individually a lamination.
+* Wonwoo Kang confirmed that unpunctured surface topologies are allowed,
+  that Definition 20 uses mutable variables equal to 1 and the sole frozen
+  variable equal to q with no additional normalization, and recalled the
+  alternating constraint on shear coordinates of one lamination.
+* Yakob Kahane confirmed that the strict comparisons in his publicly
+  available Definition 4.2 should be weak, or equivalently exclude the
+  root, as in Definition 4.1 of the accompanying manuscript. He intends
+  to correct the wording in a subsequent version.
+These confirmations clarify conventions, not the correctness of the
+mathematical results. Lean certifies algebraic statements and the
+root-excluded block statistic; it does not formalize surface geometry
+or independently check the authors' correspondence.
 -/
 
 namespace OrderIdealSpecializations
@@ -2087,6 +2097,11 @@ end OrderIdealSpecializations
 
 /-! ## §3 — An annular test of two published assertions
 
+The rank-two exchanges below are formalized algebraically. The surface
+interpretation uses the sign and single-curve conventions clarified in
+the 10 November 2026 correspondence with A. Felikson and W. Kang;
+those geometric facts are not Lean theorems.
+
 ### §3.1–3.2 — The published induction and the first annular mutation -/
 namespace OrderIdealSpecializations
 namespace AnnularFirstMutation
@@ -2601,6 +2616,12 @@ end OrderIdealSpecializations
 
 /-! ## §4 — Canonical block partitions of skew diagrams
 
+The root-exclusion convention was explicitly confirmed by Yakob Kahane
+(personal correspondence, 10 November 2026) as the intended repair of
+the strict inequalities in Definition 4.2 of arXiv:2607.11225v1.
+The proof below uses the precise formal definition, not the uncorrected
+literal wording of that version.
+
 ### §4.1 — Root-excluded boundary conditions -/
 namespace OrderIdealSpecializations
 namespace CanonicalBlocks
@@ -2698,7 +2719,7 @@ theorem singleton_root_conditions (root : Cell) (label : Cell → ℕ) :
     exact (hne hc).elim
 
 /-- Remark 4.4 — first formal reason for correcting
-    Kahane Definition 4.5. In the printed version the quantifier
+    Kahane Definition 4.2. In the printed version the quantifier
     'for each y in B' includes the root x; as x has no left parent,
     this would require label x < label x. This is impossible for every
     nonempty connected skew block. The root is excluded explicitly. -/
@@ -2710,7 +2731,7 @@ theorem left_root_exclusion_necessary
   exact (lt_irrefl (label root)) (h root hroot)
 
 /-- Remark 4.4 — second formal reason for correcting
-    Kahane Definition 4.5. The root has no left child (southward),
+    Kahane Definition 4.2. The root has no left child (southward),
     so the literally quantified condition would require label x > label x.
     This excludes ALL nonempty blocks unless the root is excepted. -/
 theorem bottom_root_exclusion_necessary
@@ -4262,7 +4283,7 @@ theorem skewRowIntervals_southwest_square {D : Diagram}
   · omega
 
 /-- Lemma 4.3 — interblock root order.
-    Source: Kahane Definition 4.5 refers to Definition 3.2:
+    Source: Kahane Definition 4.2 refers to Definition 3.2:
     whenever a cell of B_i is below another cell in B_j in the poset,
     the root labels must be strictly ordered if i != j.
     Here we impose WEAK local order at neighboring cells (equality is
@@ -5929,8 +5950,8 @@ def CanonicalBlockExistenceCertificate
   OrderedRootFibers D label
 
 /-- Lemma 4.3 — existence of canonical admissible root assignments.
-    Source target: Kahane LEMMA 4.6, under the root-exclusion repair
-    of his Definition 4.5. All cells are in exactly one canonical fiber;
+    Source target: Kahane LEMMA 4.3, under the root-exclusion repair
+    of his Definition 4.2. All cells are in exactly one canonical fiber;
     all nonempty fibers are connected skew diagrams with the southwest
     root, root-excluded strict inequalities and the local/global block-order
     invariant. Existence is complemented by the uniqueness theorem below. -/
@@ -5979,7 +6000,7 @@ noncomputable def arbitraryRootFiber (D : Diagram)
   simp [arbitraryRootFiber]
 
 /-- Lemma 4.3 — definition of a corrected valid partition.
-    Mirrors Kahane Definition 4.5 EXCEPT (i) the mandatory exclusion
+    Mirrors Kahane Definition 4.2 EXCEPT (i) the mandatory exclusion
     of the root from strict boundary inequalities and (ii) the use of
     `RootLocallyOrdered` rather than the raw global order in Kahane
     Definition 3.2. The two conditions are proved equivalent below
@@ -6287,7 +6308,7 @@ theorem canonicalRoots_admissible
     unique outside D, where all admissible assignments are `none`).
     Every fiber is a connected skew block with a southwest root and
     corrected strict boundary labels. DOES NOT prove the literal
-    uncorrected Kahane Definition 4.5 (which is inconsistent), nor
+    uncorrected Kahane Definition 4.2 (which is inconsistent), nor
     assert that the resulting statistic equals his intended statistic
     without resolving the root-exclusion typo. The global-order
     equivalence is now proved in `rootLocallyOrdered_iff_kahaneGlobal`. -/
@@ -6316,8 +6337,8 @@ end OrderIdealSpecializations
 
 The following equivalence compares two orders on block roots:
 * `RootLocallyOrdered` only compares roots at adjacent cells;
-* `KahaneGlobalBlockOrder` is the corrected form of Kahane v2
-  Definition 3.2 applied to his skew-shape Definition 4.5: if a cell of
+* `KahaneGlobalBlockOrder` is the corrected form of Kahane v1
+  Definition 3.2 applied to his skew-shape Definition 4.2: if a cell of
   block B is strictly BELOW a cell of block C in the skew poset, the
   root label of B must be strictly smaller than the root label of C.
 
@@ -6523,7 +6544,7 @@ theorem admissible_iff_kahaneOrdered
 
 /-- Lemma 4.3 — canonical partition with global block order
     from Kahane Definition 3.2 and the necessary ROOT EXCLUSION from
-    the printed Definition 4.5. This is the amended Lemma 4.6 in Kahane's
+    the printed Definition 4.2. This is the amended Lemma 4.3 in Kahane's
     numbering. Existence and uniqueness are unconditional among
     globally valid block partitions (for injective labels), not merely
     among partitions produced by the median algorithm. -/

@@ -10,7 +10,7 @@ This repository develops a common order-ideal framework for two apparently diffe
 
 The first question leads to explicit algebraic counterexamples to unimodality and log-concavity. The second leads to a formal proof of a **skew-shape block-statistic identity**, using canonical block partitions and commuting tableau-transfer matrices. A bivariate refinement connects the two specializations.
 
-> **Scope of the claims.** The Lean theorems establish the precise statements encoded in this repository. The block statistic follows the **root-excluded convention** stated in the accompanying manuscript; its identification with the intended definition in Kahane's source requires a direct comparison. Similarly, the annular exchange and coefficient calculations are formalized algebraically, but the realization of the indicated shear-coordinate rows by *individual geometric laminations* is **not certified** by this repository. In particular, claims about refuting the unrestricted geometric formulation of a published surface theorem remain conditional on that geometric verification.
+> **Scope of the claims (updated 10 November 2026).** The Lean theorems certify the statements encoded in this repository. In direct correspondence, **Yakob Kahane** confirmed that the strict inequalities in Definition 4.2 of his arXiv v1 manuscript should be weak, or equivalently should exclude the block root; this matches our explicit statistic. **Anna Felikson** confirmed the sign reversal and that the individual depicted curves are laminations. **Wonwoo Kang** confirmed the unpunctured-surface scope and the specialization of Definition 20, while noting the alternating constraint for one lamination. These replies clarify the underlying conventions, **not** the proofs: Lean checks the algebra and corrected block statistic, not geometric realizability or the private correspondence. None of the three authors is thereby claimed to have endorsed or independently verified our counterexamples or proof.
 
 ## 1. The common object: weighted order ideals
 
@@ -62,7 +62,7 @@ $$
 
 Every displayed coefficient is positive, yet $2^2<1\cdot7$: **full support does not force log-concavity**. The successive exchange identities, coefficient positivity, and inequality are formalized in `AnnularFourthMutation`.
 
-These computations motivate the manuscript's discussion of **Theorem 14 and Conjecture 1 of Kang–Lee–Lim**. The algebraic counterexamples are established; identifying them as counterexamples to the *geometric single-lamination claims* additionally requires verification of the surface and shear-coordinate conventions. The source does not silently assume that verification.
+These computations motivate the manuscript's discussion of **Theorem 14 and Conjecture 1 of Kang–Lee–Lim**. The geometric sign, individual-curve and specialization conventions were clarified in correspondence with Felikson and Kang on 10 November 2026, as detailed above. The exchange computations themselves are Lean-verified; Lean does not formalize the annulus or the geometric shear realization.
 
 ## 3. Canonical blocks and the skew-shape identity
 
@@ -85,7 +85,7 @@ The proof proceeds through:
 
 The formal statement is `OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity`.
 
-**Relation to Kahane's conjecture.** This is a proof of the explicitly defined *corrected block-statistic identity*. The claim that it settles the exact wording of Kahane's original conjecture depends on confirming that its intended root and neighbor conventions coincide with these formal definitions. That comparison is an outstanding scholarly check, not a missing Lean proof step.
+**Relation to Kahane's conjecture.** The public arXiv version currently available is **v1** (Conjecture **4.4**, Definition **4.2**, Lemma **4.3**). On 10 November 2026, Kahane confirmed that the strict root comparisons in Definition 4.2 should be weak or should exclude the root, as in this repository; he stated that he would correct the definition in a future version. This resolves the specific root-exclusion ambiguity. The coordinate orientation is fixed explicitly by our definitions; that correspondence and the mathematical proof are separate from the author's clarification.
 
 ## 4. A bivariate refinement and two specializations
 
@@ -150,7 +150,7 @@ In the verified local compilation, the reported dependencies were **`propext`, `
 
 **Established by the Lean development:** the algebraic coefficient obstructions, the corrected canonical block constructions, the tableau-transfer and ordered-root identities, the skew-shape block identity as formalized, and the finite bivariate refinement and specializations.
 
-**Not yet established by this repository:** the equivalence of the corrected block convention with the *precise intended* printed convention in every version of Kahane's paper; the geometric realizability and sign convention of the individual annular laminations used to interpret the algebraic examples as unconditional surface counterexamples. These qualifications matter when quoting the results.
+**Clarified by the cited authors (personal correspondence, 10 November 2026):** Kahane confirmed root exclusion as the intended correction of his Definition 4.2; Felikson confirmed sign reversal and the individual-lamination status of the pictured curves; Kang confirmed the admissible surface setting and Definition 20's specialization, subject to an alternating constraint for a single lamination. **Not certified inside Lean:** the geometric/topological realization of a curve and its shear vector, or the accuracy of the source correspondence. These confirmations are not peer review or an endorsement of our conclusions.
 
 **Related literature**
 
@@ -159,4 +159,4 @@ In the verified local compilation, the reported dependencies were **`propext`, `
 - P. Galashin, D. Grinberg and G. Liu, *Refined dual stable Grothendieck polynomials and generalized Bender–Knuth involutions*, *Electronic Journal of Combinatorics* **23** (2016), P3.14. [DOI](https://doi.org/10.37236/5737).
 - S. Fomin and A. Zelevinsky, *Cluster algebras IV: Coefficients*, *Compositio Mathematica* **143** (2007), 112–164. [DOI](https://doi.org/10.1112/S0010437X06002521).
 
-This README documents the formalized results and their boundaries. It should be updated when the manuscript receives a stable arXiv identifier or the open definition/geometry checks are settled.
+This README documents the formalized results and their boundaries. The source-interpretation updates are dated 10 November 2026; future author revisions and any journal referee comments should be tracked independently.
