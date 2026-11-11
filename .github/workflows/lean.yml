@@ -1,14 +1,13 @@
-name: Lean verification
-
+name: Verify Lean formalization
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
-
+permissions:
+  contents: read
 jobs:
-  proof:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,5 +15,7 @@ jobs:
         with:
           auto-config: false
           use-mathlib-cache: true
-      - name: Check full formalization and axiom audit
-        run: lake env lean Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: Verify complete cumulative proof
+        run: bash scripts/verify.sh

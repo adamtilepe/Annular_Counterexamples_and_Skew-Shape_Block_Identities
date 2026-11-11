@@ -1,23 +1,39 @@
 import Mathlib
 
 /-!
-# Annular Counterexamples and Skew-Shape Block Identities
+# Annular Obstructions and Skew-Shape Block Identities
 
 Formal development accompanying the research manuscript
-*Annular Counterexamples and Skew-Shape Block Identities:
+*Annular Obstructions and Skew-Shape Block Identities:
 Weighted Order Ideals and a Lean-Verified Refinement*.
 
-## Mathematical contents
+## Mathematical contents and manuscript correspondence (11 November 2026)
 
 * §2 — Weighted lower ideals, isotone colorings, order polynomials,
   zeta matrices, fence/ribbon posets, and small-weight support.
 * §3 — Algebraic annular mutation examples and the one-cell enumerator.
+  The Laurent phenomenon legitimizes mutable-variable specialization,
+  but the one-lamination SAME-TRIANGULATION shear realization of a
+  particular frozen row is not formalized. Thus KLL surface applications
+  are explicitly conditional; coefficient computations are unconditional
+  in the specified algebraic model. The two-color mutation table in the
+  revised manuscript explains frozen-row signs and q-exponents.
 * §4 — Root-excluded block conditions, boundary geometry, canonical
   median construction, and uniqueness of valid block decompositions.
-* §5 — Tableau transfer matrices, generalized Bender–Knuth switching,
-  vertical-strip inverses, and commuting connected-block kernels.
-* §6 — Ordered-root integral identity, skew-shape block-statistic theorem,
-  bivariate refinement, and the two specializations.
+  The median case x < a with a < b places the cell on the LEFT edge of
+  its row; x > b places it on the BOTTOM edge of its column.
+* §5 — Tableau transfer matrices, two-color Bender-Knuth switching
+  (Galashin--Grinberg--Liu, PUBLISHED Lemma 7), vertical-strip inverses,
+  and commuting connected-block kernels. Vertical-strip prefixes of a
+  same-left-endpoint row group are taken TOP-to-BOTTOM (Lemma 5.3).
+* §6 — Ordered-root integral identity, skew-shape block-statistic theorem
+  (Kahane Conjecture 4.7 in v2), and the COROLLARY 6.3 bivariate
+  refinement and its specializations. In Lemma 6.1 the canonical chain
+  of LOWER ideals is built in DESCENDING block-root order, then kernel
+  commutation permits the ordered-integral rearrangement.
+
+These lines clarify previously compiled theorems; no declarations or
+proof tactics have been changed in this migration.
 
 Convention clarifications (personal correspondence, 10 November 2026):
 * Anna Felikson confirmed that one may reverse the signs of the listed
@@ -29305,7 +29321,7 @@ theorem skew_shape_block_statistic_identity (D : Diagram) :
 end OrderedRootIntegral
 end OrderIdealSpecializations
 
-/-! ### Theorem 6.3 — Bivariate block refinement and coefficientwise positivity. -/
+/-! ### Corollary 6.3 — Bivariate consequence of the block identity and coefficientwise positivity. -/
 namespace OrderIdealSpecializations
 namespace OrderedRootIntegral
 
@@ -29545,7 +29561,7 @@ private theorem weighted_refinement_factorial_ratio (D : Diagram) (I : ShapeIdea
     (b : ℚ) = (a : ℚ) * ((b / a : ℕ) : ℚ) := hprodQ.symm
     _ = ((b / a : ℕ) : ℚ) * (a : ℚ) := mul_comm _ _
 
-/-- **Theorem 6.3 (Bivariate block refinement).**
+/-- **Corollary 6.3 (Bivariate consequence of the block identity).**
 The factorial multiplier is literally a natural number. The
 finite sum on the right uses the *corrected*, canonical block count
 of the actual complement skew diagram. -/
@@ -29795,7 +29811,7 @@ private theorem weighted_refinement_regroup_weight (D : Diagram)
                   rw [Finset.sum_ite_eq]
                   simp only [hw, ite_true]
 
-/-- **The coefficientwise form of manuscript Theorem 6.3.**
+/-- **The coefficientwise form of manuscript Corollary 6.3.**
 The bivariate formula uses only a finite sum of monomials with
 natural-number coefficients. Its q-exponents may be negative, but
 shifting them by their finite minimum produces an ordinary polynomial

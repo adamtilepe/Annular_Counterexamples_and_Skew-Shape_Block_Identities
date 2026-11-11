@@ -1,8 +1,11 @@
+# Additional ignores recommended by the migration kit
 .lake/
-.DS_Store
+audit/
 *.olean
 *.ilean
 *.trace
-*.c
-*.o
-audit/*.log
+.DS_Store
+__pycache__/
+*.pyc
+.obstructions_migration_state
+.obstructions_migration_verified

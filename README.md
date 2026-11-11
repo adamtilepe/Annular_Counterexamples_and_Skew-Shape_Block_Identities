@@ -1,172 +1,110 @@
-# Annular Counterexamples and Skew-Shape Block Identities
+# Annular Obstructions and Skew-Shape Block Identities
 
-**Lean 4 / Mathlib formalization accompanying the research manuscript**  
-*Annular Counterexamples and Skew-Shape Block Identities: Weighted Order Ideals and a Lean-Verified Refinement*  
-[Preprint](https://arxiv.org/abs/2611.14506) · [Kahane v2 source](https://arxiv.org/abs/2607.11225)
+**Weighted Order Ideals and a Lean-Verified Refinement**
+**Adam Tilèpe — 11 November 2026**
 
-This repository develops a common order-ideal framework for two apparently different questions in enumerative combinatorics:
+**Manuscript:** [arXiv:2611.14506](https://arxiv.org/abs/2611.14506) · **Lean 4 / Mathlib formalization** · [Kahane's conjecture, arXiv:2607.11225v2](https://arxiv.org/abs/2607.11225v2)
 
-1. **What happens to coefficient-shape properties such as unimodality and log-concavity when order ideals receive nonuniform integer weights?**
-2. **Can the order polynomial of a skew Young diagram be expressed through a positive statistic on its bijective labelings?**
+> **Title and manuscript versions.** The original arXiv submission and the former GitHub repository used **Annular Counterexamples**. The revised manuscript and the files in this existing repository use **Annular Obstructions**, because the algebraic mutation obstructions are verified but a same-triangulation, single-lamination shear-coordinate realization of the annular rows remains a *separate unverified geometric identification*. The arXiv abstract and paper may temporarily retain older links until the next arXiv revision.
 
-The first question leads to explicit algebraic counterexamples to unimodality and log-concavity. The second leads to a formal proof of a **skew-shape block-statistic identity**, using canonical block partitions and commuting tableau-transfer matrices. A bivariate refinement connects the two specializations.
+## 1. Results and exact status
 
-> **Scope of the claims (updated 11 November 2026).** The Lean theorems certify the statements encoded in this repository. In direct correspondence, **Yakob Kahane** confirmed that the strict root comparisons of his **v1 Definition 4.2** should be weak, or equivalently exclude the root. The corresponding block definition in **arXiv:2607.11225v2 is Definition 4.5**; our formalization uses the explicit root-exclusion convention. **Anna Felikson** confirmed the sign reversal and that the individual depicted curves are laminations. **Wonwoo Kang** confirmed the unpunctured-surface scope and the specialization of Definition 20, while noting the alternating constraint for one lamination. These replies clarify the underlying conventions, **not** the proofs: Lean checks the algebra and corrected block statistic, not geometric realizability or the private correspondence. None of the three authors is thereby claimed to have endorsed or independently verified our counterexamples or proof.
-
-## 1. The common object: weighted order ideals
-
-Let $P$ be a finite poset, $J(P)$ its set of lower ideals, and $w:P\to\mathbb Z$ an integer weighting. Write $w(I)=\sum_{p\in I}w(p)$. The weighted rank enumerator is
-
-$$
-R_{P,w}(q)=\sum_{I\in J(P)}q^{w(I)}.
-$$
-
-Its order-polynomial counterpart counts isotone maps $P\to[m]$, denoted $\Omega(P;m)$. Both arise as specializations of
+The development connects two specializations of weighted order ideals of a finite poset, through
 
 $$
 H_{P,w}(t;q)=\sum_{I\in J(P)}q^{w(I)}\,\Omega(P\setminus I;t-1),
 $$
 
-with
+where $J(P)$ consists of lower ideals, $w(I)$ is the total weight and $\Omega$ is the order polynomial. Its coordinate specializations give the weighted ideal enumerator and the order polynomial.
+
+### Annular algebraic obstructions (§3)
+
+For the explicit rank-two extended matrix with frozen row $(r,-r-1)$, the first specialized exchange gives $1+q^r$. When $r\ge2$ its coefficient sequence is not unimodal; $1+q^2$ also violates log-concavity. A four-mutation algebraic calculation with frozen row $(1,-2)$ gives
 
 $$
-H_{P,w}(t;1)=\Omega(P;t),\qquad H_{P,w}(2;q)=R_{P,w}(q).
+1+2q+7q^2+10q^3+9q^4+4q^5+q^6,
 $$
 
-The Lean development implements these finite enumerations and their evaluations (`FinitePoset.H`, `FinitePoset.omega`, `FinitePoset.weightedRank`). Signed exponents are handled via integer powers of rational values; the development does **not** define a general two-variable Laurent polynomial object for $H$.
+which has full support but fails log-concavity. The Lean file checks the matrix/exchange calculations and polynomial inequalities. The manuscript's table records the active frozen rows and $q$ exponents (in the third mutation the active frozen entry $-1$ yields a factor $q^1$ beside the squared cluster term; in the fourth the frozen entry $0$ yields $q^0=1$). The Laurent phenomenon guarantees the relevant cluster variables are Laurent polynomials in the initial mutable variables over the coefficient ring, so evaluation at $x_1=x_2=1$ is legitimate in that Laurent ring; the displayed specialized quotients are exact polynomial identities.
 
-It also proves a **no-gap support criterion** for ideal weights with $|w(p)|\le1$: every integer between the minimum and maximum ideal weights occurs. This does not imply unimodality.
+**Essential distinction:** these statements do **not**, by themselves, establish counterexamples for single laminations in Kang–Lee–Lim, Theorem 14 or Conjecture 1. That conclusion additionally requires matching the chosen frozen row, its shear-coordinate ordering and principal exchange matrix to **one lamination in the same annular triangulation**, including all necessary restrictions. That geometric realization is not a theorem of this Lean file. The correspondence with Felikson–Tumarkin and Kang clarifies conventions, not the missing geometric proof or the validity of the manuscript's stronger interpretations.
 
-## 2. Algebraic obstructions to unimodality and log-concavity
+### Kahane's skew-shape identity (§§4–6)
 
-The surface-motivated part studies specialized cluster exchange relations with two mutable variables and one frozen row, as in the manuscript's annular examples.
-
-**First mutation — equation (3.3).** For every integer $r\ge2$, the specified algebraic exchange specializes to
-
-$$
-c_r(q)=1+q^r.
-$$
-
-Its complete coefficient sequence contains internal zeros and is **not unimodal**. At $r=2$, its coefficients $(1,0,1)$ also fail log-concavity:
-
-$$
-a_1^2=0<a_0a_2=1.
-$$
-
-The file proves the polynomial identity, all coefficients, non-unimodality, and the strict log-concavity violation (`AnnularFirstMutation.firstPolynomial_not_unimodal`, `AnnularFirstMutation.firstPolynomial_two_not_logConcave`).
-
-**Four-mutation example — equation (3.4).** A second algebraic calculation, with frozen row $(1,-2)$ and mutation sequence $(1,2,1,2)$, produces
-
-$$
-1+2q+7q^2+10q^3+9q^4+4q^5+q^6.
-$$
-
-Every displayed coefficient is positive, yet $2^2<1\cdot7$: **full support does not force log-concavity**. The successive exchange identities, coefficient positivity, and inequality are formalized in `AnnularFourthMutation`.
-
-These computations motivate the manuscript's discussion of **Theorem 14 and Conjecture 1 of Kang–Lee–Lim**. The geometric sign, individual-curve and specialization conventions were clarified in correspondence with Felikson and Kang on 10 November 2026, as detailed above. The exchange computations themselves are Lean-verified; Lean does not formalize the annulus or the geometric shear realization.
-
-## 3. Canonical blocks and the skew-shape identity
-
-For a finite skew Young diagram $D$ with $n$ cells, the development constructs canonical connected blocks of a bijective cell labeling $\sigma$, and writes $\widetilde{\mathrm{bl}}_D(\sigma)$ for their number. In this formalization, the root is **excluded from its own strict boundary-label conditions**, as explained in the manuscript's Definition 4.1.
-
-The principal result (Theorem 6.2 of the manuscript, corresponding to **Kahane's Conjecture 4.7 in arXiv:2607.11225v2**) is
+For any finite skew Young diagram $D$ of size $n$, including disconnected shapes, the main formal result corresponds to the block-statistic identity
 
 $$
 n!\,\Omega(P_D;t)=\sum_{\sigma:D\xrightarrow{\sim}[n]}t^{\widetilde{\mathrm{bl}}_D(\sigma)}.
 $$
 
-This applies to diagrams satisfying the explicit `SkewRowIntervals` hypothesis, including disconnected shapes. In Lean, the named theorem proves equality of the corresponding evaluations at every natural-number argument; the normalized block-generating expression is itself a rational polynomial.
+This is identified in the manuscript as **Kahane's Conjecture 4.7 in arXiv:2607.11225v2**, with the explicitly corrected *root-exclusion* convention. The source counterparts are Kahane's **Definition 3.2** (order of blocks), **Proposition 4.4** (leftmost corner), **Definition 4.5** (blocks), **Lemma 4.6** (uniqueness), and **Conjecture 4.7**. The earlier v1 uses different numbers; Kahane's email about Definition 4.2 referred to that earlier version.
 
-The proof proceeds through:
+The root in each connected block is its southwest corner. Nonroot cells at the left end of a row have a smaller label than the root; nonroot cells at the bottom of a column have a larger label. The root is excluded from its own strict comparisons. The development proves the equivalence between its local root-order condition and the globally ordered-block condition under stated shape and assignment hypotheses.
 
-- a canonical median construction and uniqueness of block partitions (§4);
-- commuting tableau-transfer matrices $T_x$ and a vertical-strip inverse $Q_x$ (§5);
-- connected-block kernels $A_z$, their commutation, and exact polynomial primitives (§§5–6);
-- the ordered-root integral identity (Lemma 6.1), followed by a **finite** polynomial-matrix differential-equation argument identifying the result with powers of the zeta matrix (§6.2).
+The paper's combinatorial proof uses a median construction, commuting tableau-transfer matrices, a connected-block inverse kernel and finite polynomial differential equations. Its **Lemma 5.3** selects vertical-strip prefixes *top to bottom* in groups of rows with the same left endpoint. Its **Lemma 6.1** builds chains of *lower ideals with decreasing root labels*; kernel commutativity then permits rewriting ordered integrals with increasing variables. The two-color switching step corresponds to **Lemma 7** of the *published* Galashin–Grinberg–Liu paper (2016, EJC 23(3), P3.14). In that same published version, Proposition 4(a) and Theorems 5–6 give contextual specialization/symmetry/involution results; other versions may number them differently.
 
-The formal statement is `OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity`.
+**Corollary 6.3** is a bivariate consequence of the skew-shape identity, rather than an independent fourth main theorem. It gives a shifted coefficientwise-positive expansion, with a suitable common monomial factor in the weight variable when negative exponents occur. Corollary 6.4 records two specializations.
 
-**Exact comparison with Kahane v2.** The reference is **Yakob Kahane, arXiv:2607.11225v2 (2 November 2026)**. The matching source statements are **Proposition 4.4** (unique leftmost corner), **Definition 4.5** (skew-shape blocks), **Lemma 4.6** (existence/uniqueness), **Conjecture 4.7** (the polynomial identity), and **Definition 3.2** (global order between blocks). Kahane's earlier **v1** uses **Definition 4.2** and **Lemma 4.3** for the first two block statements; his email of 10 November uses that earlier numbering. His confirmation concerns the root-exclusion correction, not an endorsement of this proof.
+## 2. Main Lean declarations
 
-The v2 definitions specify the *left parent* of `(i,j)` as `(i,j-1)` and its *left child* as `(i+1,j)`. Once the row orientation is fixed (rows increase downwards), the root without these neighbors is the southwest corner. A nonroot cell with no left parent is on the left edge of its row and must have a **smaller** label than the root; a nonroot cell with no left child lies at the bottom of its column and must have a **larger** label. The strict comparisons cannot literally include the root itself. For example, a horizontal two-cell shape is a single block for labels `(1,2)` (left to right), but splits into two blocks for `(2,1)`.
+All paths below are relative to `OrderIdealSpecializations` in the main file.
 
-The v2 proof of **Lemma 4.6** repeats the same insertion case in its final two bullets. The canonical *median scan* here also handles the omitted case where the inserted label is below the lower-root label. In Lean, the bridge from local order to Kahane's **global** Definition 3.2 is not assumed: `CanonicalBlocks.rootLocallyOrdered_iff_kahaneGlobal` proves it for a total root assignment on a `SkewRowIntervals` diagram, with roots `none` off the diagram; `CanonicalBlocks.admissible_iff_kahaneOrdered` transfers admissibility; and `CanonicalBlocks.correctedKahaneBlocks_exists_unique` proves existence and uniqueness of the globally valid corrected partition for injective labels.
+| Manuscript | Lean declaration |
+|---|---|
+| Theorem 3.2: non-unimodality (algebraic) | `AnnularFirstMutation.firstPolynomial_not_unimodal` |
+| Proposition 3.4: log-concavity obstruction (algebraic) | `AnnularFourthMutation.D_not_logConcave` |
+| Lemma 4.3: corrected valid block partition | `CanonicalBlocks.correctedKahaneBlocks_exists_unique` |
+| Local/global correspondence | `CanonicalBlocks.rootLocallyOrdered_iff_kahaneGlobal` and `CanonicalBlocks.admissible_iff_kahaneOrdered` |
+| Lemma 5.1: transfer commutation | `TableauTransfer.tableau_transfer_matrices_commute` |
+| Lemma 5.3: inverse and derivative | `TableauTransfer.vertical_strip_inverse_and_log_derivative` |
+| Proposition 5.4: commuting kernels | `TableauTransfer.connected_block_kernels_commute` |
+| Lemma 6.1: ordered-root integral | `OrderedRootIntegral.ordered_root_integral_identity` |
+| Theorem 6.2: Kahane 4.7 (v2), with corrected statistic | `OrderedRootIntegral.skew_shape_block_statistic_identity` |
+| Corollary 6.3: bivariate refinement | `OrderedRootIntegral.weighted_block_refinement_identity` |
+| Corollary 6.4: specializations | `OrderedRootIntegral.weighted_block_two_specializations` |
 
-The final polynomial statement is `OrderedRootIntegral.skew_shape_block_statistic_identity`, at every natural-number evaluation. Equality as polynomials follows from the polynomial nature of both sides. This certifies our **formal definitions and theorem**, not the correctness of source wording or the author's intent beyond his explicit clarification. See **Section 7** of the accompanying manuscript for the detailed comparison.
+These are **formal statements in the code**, not a blanket assertion that the external geometric setup or every citation-to-literature equivalence has been formalized.
 
-## 4. A bivariate refinement and two specializations
+## 3. Reproduce the checks
 
-Theorem 6.3 expresses the weighted interpolation in terms of block statistics on the skew complements of ideals:
+This repository contains:
 
-$$
-n!\,H_{P_D,w}(t;q)
-=\sum_{I\in J(P_D)}\frac{n!}{(n-|I|)!}\,q^{w(I)}
-\sum_{\sigma:P_D\setminus I\,\xrightarrow{\sim}\,[n-|I|]}
-(t-1)^{\widetilde{\mathrm{bl}}_{P_D\setminus I}(\sigma)}.
-$$
+- `Annular_Obstructions_and_Skew-Shape_Block_Identities.lean`: the full cumulative Lean proof file;
+- `lean-toolchain`, `lakefile.toml` or `lakefile.lean`, and `lake-manifest.json`: **copied unchanged or minimally retitled from the compiling original local repository** by the migration script, preserving the pinned dependencies;
+- `scripts/verify.sh`: checks the exact file with `lake env lean`, writes `audit/compile.log` and source hashes;
+- `.github/workflows/lean.yml`: repeatable GitHub Actions verification;
+- `docs/PROVENANCE_AND_SCOPE.md`: migration constraints and publication caveats.
 
-Its finite expansion has **nonnegative integer coefficients in $t-1$** and, after a common exponent shift, in $q$ as well. Corollary 6.4 recovers the two coordinate specializations and the ideal count
-
-$$
-|J(P_D)|=\frac1{n!}\sum_\sigma 2^{\widetilde{\mathrm{bl}}_D(\sigma)}.
-$$
-
-The one-cell example has $H(t;q)=(t-1)+q^2$, giving the common smallest instance of both viewpoints. The fence/ribbon connection is formulated **conditionally on an explicit order isomorphism**; the existence of a particular surface-arc model is not deduced from the algebra.
-
-## 5. Navigation: manuscript to Lean
-
-| Manuscript result | Principal Lean declaration (within `OrderIdealSpecializations`) |
-| --- | --- |
-| Proposition 2.1 — two specializations | `FinitePoset.H_two`; related `FinitePoset.H_one_eq_omega_succ` |
-| Theorem 3.2 — non-unimodality (algebraic) | `AnnularFirstMutation.firstPolynomial_not_unimodal` |
-| Proposition 3.4 — failure of log-concavity (algebraic) | `AnnularFourthMutation.D_not_logConcave` |
-| Lemma 4.3 — corrected block existence/uniqueness (Kahane **v2 Lemma 4.6**) | `CanonicalBlocks.correctedKahaneBlocks_exists_unique` |
-| Root-order correspondence (Kahane **v2 Definition 3.2**) | `CanonicalBlocks.rootLocallyOrdered_iff_kahaneGlobal`; `CanonicalBlocks.admissible_iff_kahaneOrdered` |
-| Root-exclusion necessity (Kahane **v2 Definition 4.5**) | `CanonicalBlocks.left_root_exclusion_necessary`; `CanonicalBlocks.bottom_root_exclusion_necessary` |
-| Lemma 5.1 — transfer commutation | `TableauTransfer.tableau_transfer_matrices_commute` |
-| Lemma 5.3 — inverse/logarithmic derivative | `TableauTransfer.vertical_strip_inverse_and_log_derivative` |
-| Proposition 5.4 — commuting block kernels | `TableauTransfer.connected_block_kernels_commute` |
-| Lemma 6.1 — ordered-root integral | `OrderedRootIntegral.ordered_root_integral_identity` |
-| Theorem 6.2 — block-statistic identity | `OrderedRootIntegral.skew_shape_block_statistic_identity` |
-| Theorem 6.3 — bivariate refinement | `OrderedRootIntegral.weighted_block_refinement_identity` |
-| Corollary 6.4 — two specializations | `OrderedRootIntegral.weighted_block_two_specializations` |
-
-The complete development is in **`Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean`**. The section and theorem numbering follows the accompanying research manuscript.
-
-## 6. Reproduce the verification
-
-Use the pinned Lean 4 / Mathlib environment recorded by `lean-toolchain`, the Lake configuration, and `lake-manifest.json`:
+On a Mac with Lean/elan and Lake installed:
 
 ```bash
 lake exe cache get
-lake env lean Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean
-```
-
-If the repository includes the verification script, it can also collect the compiler output, source checksum, toolchain information, and Mathlib revision:
-
-```bash
 bash scripts/verify.sh
 ```
 
-The source ends with an axiom audit of the main theorem:
+The Lean source retains an axiom audit at the end:
 
 ```lean
 #print axioms OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity
 ```
 
-In the previously reported successful local compilation, the dependencies were **`propext`, `Classical.choice`, and `Quot.sound`** — standard Lean foundational axioms. This revision changes **Lean comments only**, and has **not been recompiled** in the present environment. A successful Lean compilation certifies the **formal statements** relative to those foundations, not the independent literary or geometric identifications described above.
+In a previously reported local build, the axioms were `propext`, `Classical.choice` and `Quot.sound` (standard Lean foundations). **The archive itself does not establish a new successful compilation**: run the checks above and inspect the output on the new machine and toolchain before relying on this status.
 
-## 7. Scientific status and references
+## 4. Sources and attribution
 
-**Established by the Lean development:** the algebraic coefficient obstructions, the corrected canonical block constructions, the tableau-transfer and ordered-root identities, the skew-shape block identity as formalized, and the finite bivariate refinement and specializations.
+- Y. Kahane, *Combinatorial interpretation of the coefficients of the order polynomial of fence posets*, [arXiv:2607.11225v2](https://arxiv.org/abs/2607.11225v2) (2 November 2026).
+- W. Kang, K. Lee and E. Lim, *Unimodality and cluster algebras from surfaces*, *European Journal of Combinatorics* **136** (2026), 104392, [DOI](https://doi.org/10.1016/j.ejc.2026.104392).
+- A. Felikson and P. Tumarkin, work on laminations and mutation-finite coefficients on surfaces, as cited in the manuscript.
+- P. Galashin, D. Grinberg and G. Liu, *Refined dual stable Grothendieck polynomials and generalized Bender–Knuth involutions*, *Electronic Journal of Combinatorics* **23** (2016), P3.14, [DOI](https://doi.org/10.37236/5737).
 
-**Clarified by the cited authors (personal correspondence, 10 November 2026):** Kahane confirmed root exclusion as the intended correction of his **v1 Definition 4.2** (**v2 Definition 4.5**); Felikson confirmed sign reversal and the individual-lamination status of the pictured curves; Kang confirmed the admissible surface setting and Definition 20's specialization, subject to an alternating constraint for a single lamination. **Not certified inside Lean:** the geometric/topological realization of a curve and its shear vector, or the accuracy of the source correspondence. These confirmations are not peer review or an endorsement of our conclusions.
+Individual authors have clarified certain conventions in personal correspondence. **Those exchanges are not peer review, independent theorem verification, or an endorsement of the manuscript.**
 
-**Related literature**
+## 5. Repository URL and local file migration
 
-- Yakob Kahane, [*Combinatorial interpretation of the coefficients of the order polynomial of fence posets*](https://arxiv.org/abs/2607.11225), **arXiv:2607.11225v2** (2 November 2026). The relevant statement is **Conjecture 4.7**, with **Definition 4.5**, **Lemma 4.6**, **Proposition 4.4**, and **Definition 3.2**.
-- W. Kang, K. Lee and E. Lim, *Unimodality and cluster algebras from surfaces*, *European Journal of Combinatorics* **136** (2026), 104392. [DOI](https://doi.org/10.1016/j.ejc.2026.104392).
-- P. Galashin, D. Grinberg and G. Liu, *Refined dual stable Grothendieck polynomials and generalized Bender–Knuth involutions*, *Electronic Journal of Combinatorics* **23** (2016), P3.14. [DOI](https://doi.org/10.37236/5737).
-- S. Fomin and A. Zelevinsky, *Cluster algebras IV: Coefficients*, *Compositio Mathematica* **143** (2007), 112–164. [DOI](https://doi.org/10.1112/S0010437X06002521).
+The **existing public repository URL stays unchanged**:
 
-This README documents the formalized results and their boundaries. The source-interpretation updates were checked against the actual Kahane v2 PDF on 11 November 2026; future author revisions and any journal referee comments should be tracked independently.
+**https://github.com/adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities**
+
+This is deliberate: GitHub's repository *slug* is left intact. The local folder and the 30,055-line Lean file are renamed to `Annular_Obstructions_and_Skew-Shape_Block_Identities`; the README title, comments, scripts, and workflow are updated, and `git push origin main` updates the original GitHub repository in place. Commit history, issues and stars are preserved. The old pathname disappears from the latest Git tree while remaining available in the commit history. The arXiv identifier is unchanged.
+
+See `docs/MIGRATION_README.md` for step-by-step commands. No GitHub repository is created, renamed, or deleted by this kit.
