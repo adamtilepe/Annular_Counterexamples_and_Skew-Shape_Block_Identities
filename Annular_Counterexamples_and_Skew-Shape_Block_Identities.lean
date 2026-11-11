@@ -27,10 +27,12 @@ Convention clarifications (personal correspondence, 10 November 2026):
   that Definition 20 uses mutable variables equal to 1 and the sole frozen
   variable equal to q with no additional normalization, and recalled the
   alternating constraint on shear coordinates of one lamination.
-* Yakob Kahane confirmed that the strict comparisons in his publicly
-  available Definition 4.2 should be weak, or equivalently exclude the
-  root, as in Definition 4.1 of the accompanying manuscript. He intends
-  to correct the wording in a subsequent version.
+* Yakob Kahane confirmed that the strict comparisons in his
+  Definition 4.2 of his v1 text (Definition 4.5 in v2)
+  should be weak, or equivalently exclude the root, as in
+  Definition 4.1 of the accompanying manuscript. The target
+  is Conjecture 4.7 of arXiv:2607.11225v2. He intends to
+  correct the wording in a subsequent version.
 These confirmations clarify conventions, not the correctness of the
 mathematical results. Lean certifies algebraic statements and the
 root-excluded block statistic; it does not formalize surface geometry
@@ -2618,7 +2620,9 @@ end OrderIdealSpecializations
 
 The root-exclusion convention was explicitly confirmed by Yakob Kahane
 (personal correspondence, 10 November 2026) as the intended repair of
-the strict inequalities in Definition 4.2 of arXiv:2607.11225v1.
+the strict inequalities in Definition 4.5 of arXiv:2607.11225v2
+(the same block definition is numbered 4.2 in v1).
+The corresponding skew-shape identity is Conjecture 4.7 of v2.
 The proof below uses the precise formal definition, not the uncorrected
 literal wording of that version.
 
@@ -2660,7 +2664,8 @@ def RootBoundaryConditions (D : Diagram) (root : Cell)
   LeftRootCondition D root label ∧ BottomRootCondition D root label
 
 /-- Definition 4.1 and Lemma 4.2 (intrinsic root).
-    Source comparison: Kahane, page 10, defines its 'leftmost element'
+    Source comparison: Kahane v2, Section 4.2, page 10,
+    Proposition 4.4 and Definition 4.5 use a 'leftmost element'
     as having neither a left parent (cell to the west) nor a left child
     (cell to the south). Hence this matches the south-west corner here.
     A unique southwest corner is simultaneously a left-row and
@@ -2719,7 +2724,8 @@ theorem singleton_root_conditions (root : Cell) (label : Cell → ℕ) :
     exact (hne hc).elim
 
 /-- Remark 4.4 — first formal reason for correcting
-    Kahane Definition 4.2. In the printed version the quantifier
+    Kahane Definition 4.5 (v2; Definition 4.2 in v1).
+    In the printed version the quantifier
     'for each y in B' includes the root x; as x has no left parent,
     this would require label x < label x. This is impossible for every
     nonempty connected skew block. The root is excluded explicitly. -/
@@ -2731,7 +2737,8 @@ theorem left_root_exclusion_necessary
   exact (lt_irrefl (label root)) (h root hroot)
 
 /-- Remark 4.4 — second formal reason for correcting
-    Kahane Definition 4.2. The root has no left child (southward),
+    Kahane Definition 4.5 (v2; Definition 4.2 in v1).
+    The root has no left child (southward),
     so the literally quantified condition would require label x > label x.
     This excludes ALL nonempty blocks unless the root is excepted. -/
 theorem bottom_root_exclusion_necessary
@@ -4283,7 +4290,7 @@ theorem skewRowIntervals_southwest_square {D : Diagram}
   · omega
 
 /-- Lemma 4.3 — interblock root order.
-    Source: Kahane Definition 4.2 refers to Definition 3.2:
+    Source: Kahane Definition 4.5 (v2) refers to Definition 3.2:
     whenever a cell of B_i is below another cell in B_j in the poset,
     the root labels must be strictly ordered if i != j.
     Here we impose WEAK local order at neighboring cells (equality is
@@ -5950,8 +5957,9 @@ def CanonicalBlockExistenceCertificate
   OrderedRootFibers D label
 
 /-- Lemma 4.3 — existence of canonical admissible root assignments.
-    Source target: Kahane LEMMA 4.3, under the root-exclusion repair
-    of his Definition 4.2. All cells are in exactly one canonical fiber;
+    Source target: Kahane Lemma 4.6 (v2; Lemma 4.3 in v1),
+    under the root-exclusion repair of his Definition 4.5
+    (v2; Definition 4.2 in v1). All cells are in exactly one canonical fiber;
     all nonempty fibers are connected skew diagrams with the southwest
     root, root-excluded strict inequalities and the local/global block-order
     invariant. Existence is complemented by the uniqueness theorem below. -/
@@ -6000,7 +6008,8 @@ noncomputable def arbitraryRootFiber (D : Diagram)
   simp [arbitraryRootFiber]
 
 /-- Lemma 4.3 — definition of a corrected valid partition.
-    Mirrors Kahane Definition 4.2 EXCEPT (i) the mandatory exclusion
+    Mirrors Kahane Definition 4.5 (v2; Definition 4.2 in v1),
+    EXCEPT (i) the mandatory exclusion
     of the root from strict boundary inequalities and (ii) the use of
     `RootLocallyOrdered` rather than the raw global order in Kahane
     Definition 3.2. The two conditions are proved equivalent below
@@ -6308,7 +6317,8 @@ theorem canonicalRoots_admissible
     unique outside D, where all admissible assignments are `none`).
     Every fiber is a connected skew block with a southwest root and
     corrected strict boundary labels. DOES NOT prove the literal
-    uncorrected Kahane Definition 4.2 (which is inconsistent), nor
+    uncorrected Kahane Definition 4.5 of v2 (which, read
+    literally, is inconsistent at the root), nor
     assert that the resulting statistic equals his intended statistic
     without resolving the root-exclusion typo. The global-order
     equivalence is now proved in `rootLocallyOrdered_iff_kahaneGlobal`. -/
@@ -6337,8 +6347,9 @@ end OrderIdealSpecializations
 
 The following equivalence compares two orders on block roots:
 * `RootLocallyOrdered` only compares roots at adjacent cells;
-* `KahaneGlobalBlockOrder` is the corrected form of Kahane v1
-  Definition 3.2 applied to his skew-shape Definition 4.2: if a cell of
+* `KahaneGlobalBlockOrder` is the corrected form of Kahane's
+  Definition 3.2 applied to his skew-shape Definition 4.5 (v2):
+  if a cell of
   block B is strictly BELOW a cell of block C in the skew poset, the
   root label of B must be strictly smaller than the root label of C.
 
@@ -6544,8 +6555,8 @@ theorem admissible_iff_kahaneOrdered
 
 /-- Lemma 4.3 — canonical partition with global block order
     from Kahane Definition 3.2 and the necessary ROOT EXCLUSION from
-    the printed Definition 4.2. This is the amended Lemma 4.3 in Kahane's
-    numbering. Existence and uniqueness are unconditional among
+    the printed Definition 4.5 of v2. This is the amended Lemma 4.6
+    in Kahane v2 (Lemma 4.3 in v1). Existence and uniqueness are unconditional among
     globally valid block partitions (for injective labels), not merely
     among partitions produced by the median algorithm. -/
 theorem correctedKahaneBlocks_exists_unique
@@ -6583,10 +6594,20 @@ condition with the corresponding global strict order for a total root
 assignment. Together with the median construction, it yields
 `correctedKahaneBlocks_exists_unique`.
 
-The equivalence of this root-excluded statistic with the intended statistic
-in Kahane's published source depends on the precise source version and
-its parent/child conventions. This is a bibliographic and mathematical
-comparison, not a consequence of Lean's kernel verification.
+The identity proved for this root-excluded statistic is identified in the
+companion manuscript with Kahane's Conjecture 4.7 (arXiv:2607.11225v2).
+In v2, the left parent of (i,j) is (i,j-1), and the left child is
+(i+1,j); thus the southwest root and the two nonroot boundary classes
+match the explicit coordinate convention used here. This comparison
+refers to Kahane v2 Proposition 4.4, Definition 4.5, Lemma 4.6, and
+Conjecture 4.7; Definition 3.2 supplies the interblock order. The
+printed proof of Lemma 4.6 repeats its last insertion case: the median
+scan above also handles attachment to the lower block. The author
+confirmed root exclusion, but has not certified our proof.
+
+These source correspondences are mathematical interpretations of the
+source, not conclusions independently checked by Lean's kernel.
+The accompanying manuscript discusses them in Section 7.
 -/
 
 /-!

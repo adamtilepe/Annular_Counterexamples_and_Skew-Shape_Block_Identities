@@ -1,7 +1,8 @@
 # Annular Counterexamples and Skew-Shape Block Identities
 
 **Lean 4 / Mathlib formalization accompanying the research manuscript**  
-*Annular Counterexamples and Skew-Shape Block Identities: Weighted Order Ideals and a Lean-Verified Refinement*
+*Annular Counterexamples and Skew-Shape Block Identities: Weighted Order Ideals and a Lean-Verified Refinement*  
+[Preprint](https://arxiv.org/abs/2611.14506) · [Kahane v2 source](https://arxiv.org/abs/2607.11225)
 
 This repository develops a common order-ideal framework for two apparently different questions in enumerative combinatorics:
 
@@ -10,7 +11,7 @@ This repository develops a common order-ideal framework for two apparently diffe
 
 The first question leads to explicit algebraic counterexamples to unimodality and log-concavity. The second leads to a formal proof of a **skew-shape block-statistic identity**, using canonical block partitions and commuting tableau-transfer matrices. A bivariate refinement connects the two specializations.
 
-> **Scope of the claims (updated 10 November 2026).** The Lean theorems certify the statements encoded in this repository. In direct correspondence, **Yakob Kahane** confirmed that the strict inequalities in Definition 4.2 of his arXiv v1 manuscript should be weak, or equivalently should exclude the block root; this matches our explicit statistic. **Anna Felikson** confirmed the sign reversal and that the individual depicted curves are laminations. **Wonwoo Kang** confirmed the unpunctured-surface scope and the specialization of Definition 20, while noting the alternating constraint for one lamination. These replies clarify the underlying conventions, **not** the proofs: Lean checks the algebra and corrected block statistic, not geometric realizability or the private correspondence. None of the three authors is thereby claimed to have endorsed or independently verified our counterexamples or proof.
+> **Scope of the claims (updated 11 November 2026).** The Lean theorems certify the statements encoded in this repository. In direct correspondence, **Yakob Kahane** confirmed that the strict root comparisons of his **v1 Definition 4.2** should be weak, or equivalently exclude the root. The corresponding block definition in **arXiv:2607.11225v2 is Definition 4.5**; our formalization uses the explicit root-exclusion convention. **Anna Felikson** confirmed the sign reversal and that the individual depicted curves are laminations. **Wonwoo Kang** confirmed the unpunctured-surface scope and the specialization of Definition 20, while noting the alternating constraint for one lamination. These replies clarify the underlying conventions, **not** the proofs: Lean checks the algebra and corrected block statistic, not geometric realizability or the private correspondence. None of the three authors is thereby claimed to have endorsed or independently verified our counterexamples or proof.
 
 ## 1. The common object: weighted order ideals
 
@@ -68,7 +69,7 @@ These computations motivate the manuscript's discussion of **Theorem 14 and Conj
 
 For a finite skew Young diagram $D$ with $n$ cells, the development constructs canonical connected blocks of a bijective cell labeling $\sigma$, and writes $\widetilde{\mathrm{bl}}_D(\sigma)$ for their number. In this formalization, the root is **excluded from its own strict boundary-label conditions**, as explained in the manuscript's Definition 4.1.
 
-The principal result (Theorem 6.2 of the manuscript) is
+The principal result (Theorem 6.2 of the manuscript, corresponding to **Kahane's Conjecture 4.7 in arXiv:2607.11225v2**) is
 
 $$
 n!\,\Omega(P_D;t)=\sum_{\sigma:D\xrightarrow{\sim}[n]}t^{\widetilde{\mathrm{bl}}_D(\sigma)}.
@@ -85,7 +86,13 @@ The proof proceeds through:
 
 The formal statement is `OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity`.
 
-**Relation to Kahane's conjecture.** The public arXiv version currently available is **v1** (Conjecture **4.4**, Definition **4.2**, Lemma **4.3**). On 10 November 2026, Kahane confirmed that the strict root comparisons in Definition 4.2 should be weak or should exclude the root, as in this repository; he stated that he would correct the definition in a future version. This resolves the specific root-exclusion ambiguity. The coordinate orientation is fixed explicitly by our definitions; that correspondence and the mathematical proof are separate from the author's clarification.
+**Exact comparison with Kahane v2.** The reference is **Yakob Kahane, arXiv:2607.11225v2 (2 November 2026)**. The matching source statements are **Proposition 4.4** (unique leftmost corner), **Definition 4.5** (skew-shape blocks), **Lemma 4.6** (existence/uniqueness), **Conjecture 4.7** (the polynomial identity), and **Definition 3.2** (global order between blocks). Kahane's earlier **v1** uses **Definition 4.2** and **Lemma 4.3** for the first two block statements; his email of 10 November uses that earlier numbering. His confirmation concerns the root-exclusion correction, not an endorsement of this proof.
+
+The v2 definitions specify the *left parent* of `(i,j)` as `(i,j-1)` and its *left child* as `(i+1,j)`. Once the row orientation is fixed (rows increase downwards), the root without these neighbors is the southwest corner. A nonroot cell with no left parent is on the left edge of its row and must have a **smaller** label than the root; a nonroot cell with no left child lies at the bottom of its column and must have a **larger** label. The strict comparisons cannot literally include the root itself. For example, a horizontal two-cell shape is a single block for labels `(1,2)` (left to right), but splits into two blocks for `(2,1)`.
+
+The v2 proof of **Lemma 4.6** repeats the same insertion case in its final two bullets. The canonical *median scan* here also handles the omitted case where the inserted label is below the lower-root label. In Lean, the bridge from local order to Kahane's **global** Definition 3.2 is not assumed: `CanonicalBlocks.rootLocallyOrdered_iff_kahaneGlobal` proves it for a total root assignment on a `SkewRowIntervals` diagram, with roots `none` off the diagram; `CanonicalBlocks.admissible_iff_kahaneOrdered` transfers admissibility; and `CanonicalBlocks.correctedKahaneBlocks_exists_unique` proves existence and uniqueness of the globally valid corrected partition for injective labels.
+
+The final polynomial statement is `OrderedRootIntegral.skew_shape_block_statistic_identity`, at every natural-number evaluation. Equality as polynomials follows from the polynomial nature of both sides. This certifies our **formal definitions and theorem**, not the correctness of source wording or the author's intent beyond his explicit clarification. See **Section 7** of the accompanying manuscript for the detailed comparison.
 
 ## 4. A bivariate refinement and two specializations
 
@@ -113,6 +120,9 @@ The one-cell example has $H(t;q)=(t-1)+q^2$, giving the common smallest instance
 | Proposition 2.1 — two specializations | `FinitePoset.H_two`; related `FinitePoset.H_one_eq_omega_succ` |
 | Theorem 3.2 — non-unimodality (algebraic) | `AnnularFirstMutation.firstPolynomial_not_unimodal` |
 | Proposition 3.4 — failure of log-concavity (algebraic) | `AnnularFourthMutation.D_not_logConcave` |
+| Lemma 4.3 — corrected block existence/uniqueness (Kahane **v2 Lemma 4.6**) | `CanonicalBlocks.correctedKahaneBlocks_exists_unique` |
+| Root-order correspondence (Kahane **v2 Definition 3.2**) | `CanonicalBlocks.rootLocallyOrdered_iff_kahaneGlobal`; `CanonicalBlocks.admissible_iff_kahaneOrdered` |
+| Root-exclusion necessity (Kahane **v2 Definition 4.5**) | `CanonicalBlocks.left_root_exclusion_necessary`; `CanonicalBlocks.bottom_root_exclusion_necessary` |
 | Lemma 5.1 — transfer commutation | `TableauTransfer.tableau_transfer_matrices_commute` |
 | Lemma 5.3 — inverse/logarithmic derivative | `TableauTransfer.vertical_strip_inverse_and_log_derivative` |
 | Proposition 5.4 — commuting block kernels | `TableauTransfer.connected_block_kernels_commute` |
@@ -144,19 +154,19 @@ The source ends with an axiom audit of the main theorem:
 #print axioms OrderIdealSpecializations.OrderedRootIntegral.skew_shape_block_statistic_identity
 ```
 
-In the verified local compilation, the reported dependencies were **`propext`, `Classical.choice`, and `Quot.sound`** — standard Lean foundational axioms. This certifies the **formal statements** relative to those foundations, not the independent literary or geometric identifications described above.
+In the previously reported successful local compilation, the dependencies were **`propext`, `Classical.choice`, and `Quot.sound`** — standard Lean foundational axioms. This revision changes **Lean comments only**, and has **not been recompiled** in the present environment. A successful Lean compilation certifies the **formal statements** relative to those foundations, not the independent literary or geometric identifications described above.
 
 ## 7. Scientific status and references
 
 **Established by the Lean development:** the algebraic coefficient obstructions, the corrected canonical block constructions, the tableau-transfer and ordered-root identities, the skew-shape block identity as formalized, and the finite bivariate refinement and specializations.
 
-**Clarified by the cited authors (personal correspondence, 10 November 2026):** Kahane confirmed root exclusion as the intended correction of his Definition 4.2; Felikson confirmed sign reversal and the individual-lamination status of the pictured curves; Kang confirmed the admissible surface setting and Definition 20's specialization, subject to an alternating constraint for a single lamination. **Not certified inside Lean:** the geometric/topological realization of a curve and its shear vector, or the accuracy of the source correspondence. These confirmations are not peer review or an endorsement of our conclusions.
+**Clarified by the cited authors (personal correspondence, 10 November 2026):** Kahane confirmed root exclusion as the intended correction of his **v1 Definition 4.2** (**v2 Definition 4.5**); Felikson confirmed sign reversal and the individual-lamination status of the pictured curves; Kang confirmed the admissible surface setting and Definition 20's specialization, subject to an alternating constraint for a single lamination. **Not certified inside Lean:** the geometric/topological realization of a curve and its shear vector, or the accuracy of the source correspondence. These confirmations are not peer review or an endorsement of our conclusions.
 
 **Related literature**
 
-- Yakob Kahane, [*Combinatorial interpretation of the coefficients of the order polynomial of fence posets*](https://arxiv.org/abs/2607.11225). The numbering of the relevant conjecture differs by source version; the manuscript accompanying this code uses the v2 numbering.
+- Yakob Kahane, [*Combinatorial interpretation of the coefficients of the order polynomial of fence posets*](https://arxiv.org/abs/2607.11225), **arXiv:2607.11225v2** (2 November 2026). The relevant statement is **Conjecture 4.7**, with **Definition 4.5**, **Lemma 4.6**, **Proposition 4.4**, and **Definition 3.2**.
 - W. Kang, K. Lee and E. Lim, *Unimodality and cluster algebras from surfaces*, *European Journal of Combinatorics* **136** (2026), 104392. [DOI](https://doi.org/10.1016/j.ejc.2026.104392).
 - P. Galashin, D. Grinberg and G. Liu, *Refined dual stable Grothendieck polynomials and generalized Bender–Knuth involutions*, *Electronic Journal of Combinatorics* **23** (2016), P3.14. [DOI](https://doi.org/10.37236/5737).
 - S. Fomin and A. Zelevinsky, *Cluster algebras IV: Coefficients*, *Compositio Mathematica* **143** (2007), 112–164. [DOI](https://doi.org/10.1112/S0010437X06002521).
 
-This README documents the formalized results and their boundaries. The source-interpretation updates are dated 10 November 2026; future author revisions and any journal referee comments should be tracked independently.
+This README documents the formalized results and their boundaries. The source-interpretation updates were checked against the actual Kahane v2 PDF on 11 November 2026; future author revisions and any journal referee comments should be tracked independently.
