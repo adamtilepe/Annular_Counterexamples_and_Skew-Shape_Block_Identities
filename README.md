@@ -5,8 +5,6 @@
 
 **Manuscript:** [arXiv:2611.14506](https://arxiv.org/abs/2611.14506) · **Lean 4 / Mathlib formalization** · [Kahane's conjecture, arXiv:2607.11225v2](https://arxiv.org/abs/2607.11225v2)
 
-> **Title and manuscript versions.** The original arXiv submission and the former GitHub repository used **Annular Counterexamples**. The revised manuscript and the files in this existing repository use **Annular Obstructions**, because the algebraic mutation obstructions are verified but a same-triangulation, single-lamination shear-coordinate realization of the annular rows remains a *separate unverified geometric identification*. The arXiv abstract and paper may temporarily retain older links until the next arXiv revision.
-
 ## 1. Results and exact status
 
 The development connects two specializations of weighted order ideals of a finite poset, through
