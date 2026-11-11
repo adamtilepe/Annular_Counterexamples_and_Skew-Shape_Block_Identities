@@ -29321,7 +29321,7 @@ theorem skew_shape_block_statistic_identity (D : Diagram) :
 end OrderedRootIntegral
 end OrderIdealSpecializations
 
-/-! ### Corollary 6.3 — Bivariate consequence of the block identity and coefficientwise positivity. -/
+/-! ### Corollary 6.3 — Bivariate consequence block identity and coefficientwise positivity. -/
 namespace OrderIdealSpecializations
 namespace OrderedRootIntegral
 
