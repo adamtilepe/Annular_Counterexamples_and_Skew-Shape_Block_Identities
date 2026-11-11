@@ -98,13 +98,3 @@ In a previously reported local build, the axioms were `propext`, `Classical.choi
 - P. Galashin, D. Grinberg and G. Liu, *Refined dual stable Grothendieck polynomials and generalized Bender–Knuth involutions*, *Electronic Journal of Combinatorics* **23** (2016), P3.14, [DOI](https://doi.org/10.37236/5737).
 
 Individual authors have clarified certain conventions in personal correspondence. **Those exchanges are not peer review, independent theorem verification, or an endorsement of the manuscript.**
-
-## 5. Repository URL and local file migration
-
-The **existing public repository URL stays unchanged**:
-
-**https://github.com/adamtilepe/Annular_Counterexamples_and_Skew-Shape_Block_Identities**
-
-This is deliberate: GitHub's repository *slug* is left intact. The local folder and the 30,055-line Lean file are renamed to `Annular_Obstructions_and_Skew-Shape_Block_Identities`; the README title, comments, scripts, and workflow are updated, and `git push origin main` updates the original GitHub repository in place. Commit history, issues and stars are preserved. The old pathname disappears from the latest Git tree while remaining available in the commit history. The arXiv identifier is unchanged.
-
-See `docs/MIGRATION_README.md` for step-by-step commands. No GitHub repository is created, renamed, or deleted by this kit.
