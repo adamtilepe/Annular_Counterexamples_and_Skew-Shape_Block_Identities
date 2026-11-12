@@ -7,13 +7,13 @@ will be replaced when you unzip with -o.
 
 From Terminal on Mac:
 
-cd "$HOME/Annular_Counterexamples_and_Skew-Shape_Block_Identities"
-ls -l Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean
+cd "$HOME/Annular_Obstructions_and_Skew-Shape_Block_Identities"
+ls -l Annular_Obstructions_and_Skew-Shape_Block_Identities.lean
 unzip -o "$HOME/Downloads/Annular_GitHub_Republish_Fix.zip"
 
 Then:
 
-lake env lean Annular_Counterexamples_and_Skew-Shape_Block_Identities.lean
+lake env lean Annular_Obstructions_and_Skew-Shape_Block_Identities.lean
 bash scripts/verify.sh
 
 Finally inspect Git status before creating a new remote repo.

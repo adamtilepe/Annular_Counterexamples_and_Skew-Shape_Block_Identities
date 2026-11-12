@@ -1770,7 +1770,7 @@ sequence is `(1,2,1,2,1)` and that it cannot have a unimodal peak.
 The finite computation is linked to the *actual* ideal enumerator,
 not merely to a detached list of numbers. -/
 namespace OrderIdealSpecializations
-namespace ChainCounterexample
+namespace ChainObstruction
 
 /-- The initial segment of the six-element chain of length `k`. -/
 def chainIdeal (k : Fin 7) : Finset (Fin 6) :=
@@ -1939,7 +1939,7 @@ theorem normalizedIdealCoefficient_not_unimodal :
   rw [heq]
   exact normalizedPrefixCoefficient_not_unimodal
 
-end ChainCounterexample
+end ChainObstruction
 end OrderIdealSpecializations
 
 /-! ## §2.2 — Surface coefficients as weighted ideals
